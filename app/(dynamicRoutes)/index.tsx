@@ -1,27 +1,24 @@
 import { StyleSheet, Text, View } from 'react-native'
 import { Link } from 'expo-router'
 
-const homeScreen = () => {
+const dynamicRouteScreen = () => {
     return (
         <View style={styles.container}>
-            <Text style={styles.font}>Home Screen</Text>
-            <Link href='/(stack)' style={styles.link}>
-                Stack Demo
+            <Text style={styles.font}>Dynamic Screen</Text>
+            <Link href='/Kumar' style={styles.link}>
+                Pass String (Kumar)
             </Link>
-            <Link href='/(link)' style={styles.link}>
-                Link Demo
-            </Link>
-            <Link href='/(tab)' style={styles.link}>
-                Tab Demo
-            </Link>
-            <Link href='/(dynamicRoutes)' style={styles.link}>
-                Dynamic Routes Demo
+            <Link href={{
+                pathname: '/[name]',
+                params: { name: 'Naveen' },
+            }} style={styles.link}>
+                Pass String (Naveen)
             </Link>
         </View >
     )
 }
 
-export default homeScreen
+export default dynamicRouteScreen
 
 const styles = StyleSheet.create({
     container: {

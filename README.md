@@ -3,9 +3,10 @@
 A React Native application bootstrapped with Expo and organized using Expo Router. It demonstrates nested navigation via tabs, stacks, and linkable screens under the `app/` directory.
 
 ### Features
-- **Expo Router** with `tabs`, `stacks`, and a `link` group
+- **Expo Router** with `tabs`, `stacks`, `link` group, and `dynamic routes`
 - Cross‑platform: iOS, Android, and Web
 - Optimized Metro bundling for web
+- Dynamic routing with parameter passing
 
 ### Requirements
 - Node.js LTS (recommended)
@@ -39,6 +40,10 @@ Scripts are defined in `package.json`:
 ### Project Structure
 ```
 app/
+  (dynamicRoutes)/
+    _layout.tsx
+    [name].tsx
+    index.tsx
   (link)/
     forgotPasswordScreen.jsx
     index.jsx
@@ -65,8 +70,39 @@ Key points:
 - `app/index.jsx`: Root route.
 - `app/(tab)/_layout.jsx`: Declares a tab navigator and tab screens.
 - `app/(stack)/_layout.tsx`: Declares a stack navigator and its screens.
+- `app/(dynamicRoutes)/_layout.tsx`: Declares a stack navigator for dynamic routes.
+- `app/(dynamicRoutes)/[name].tsx`: Dynamic route that accepts a `name` parameter.
+- `app/(dynamicRoutes)/index.tsx`: Entry point for dynamic routes with navigation examples.
 - `app/(link)/*`: Simple linkable screens (e.g., login/register/forgot password flows).
 - `app/+not-found.tsx`: 404 route for unmatched paths.
+
+### Dynamic Routes
+The app includes dynamic routing capabilities that allow passing parameters through URLs:
+
+#### Implementation
+- **`app/(dynamicRoutes)/[name].tsx`**: A dynamic route that accepts a `name` parameter
+- **`app/(dynamicRoutes)/index.tsx`**: Entry point with navigation examples
+- **`app/(dynamicRoutes)/_layout.tsx`**: Stack navigator configuration for dynamic routes
+
+#### Usage Examples
+```typescript
+// Direct URL navigation
+<Link href="/Kumar">Pass String (Kumar)</Link>
+
+// Object-based navigation with parameters
+<Link href={{
+    pathname: '/[name]',
+    params: { name: 'Naveen' },
+}}>Pass String (Naveen)</Link>
+```
+
+#### Parameter Access
+In the dynamic route component, access parameters using `useLocalSearchParams()`:
+```typescript
+import { useLocalSearchParams } from 'expo-router';
+
+const { name } = useLocalSearchParams();
+```
 
 ### Navigation & Deep Linking
 This project uses Expo Router (see `app.json` → `plugins: ["expo-router"]`). The configured scheme is `ExpoNavigation`, which enables deep linking such as:
