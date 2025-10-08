@@ -23,6 +23,9 @@ const homeScreen = () => {
             <Link href='/(stackNavigator)' style={styles.link}>
                 Stack Navigator Demo
             </Link>
+            <Link href='/(nativeTabsDemo)' style={styles.link}>
+                (nativeTabsDemo) Demo
+            </Link>
         </View >
     )
 }

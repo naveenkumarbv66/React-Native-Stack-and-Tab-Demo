@@ -3,7 +3,8 @@
 A React Native application bootstrapped with Expo and organized using Expo Router. It demonstrates nested navigation via tabs, stacks, and linkable screens under the `app/` directory.
 
 ### Features
-- **Expo Router** with `tabs`, `stacks`, `link` group, and `dynamic routes`
+- **Expo Router** with `tabs`, `stacks`, `link` group, `dynamic routes`, and `native tabs`
+- **Native Tabs Demo** with SF Symbols icons and Material Design icons
 - Cross‑platform: iOS, Android, and Web
 - Optimized Metro bundling for web
 - Dynamic routing with parameter passing
@@ -55,6 +56,11 @@ app/
     forgotPasswordScreen.jsx
     index.jsx
     registerScreen.jsx
+  (nativeTabsDemo)/
+    _layout.tsx
+    index.tsx
+    profile.tsx
+    settings.tsx
   (stack)/
     _layout.tsx
     index.jsx
@@ -90,6 +96,10 @@ assets/
 Key points:
 - `app/index.jsx`: Root route.
 - `app/(tab)/_layout.jsx`: Declares a tab navigator and tab screens.
+- `app/(nativeTabsDemo)/_layout.tsx`: Native tabs layout with SF Symbols and Material Design icons.
+- `app/(nativeTabsDemo)/index.tsx`: Home tab with welcome content and feature overview.
+- `app/(nativeTabsDemo)/settings.tsx`: Settings tab with interactive switches and menu items.
+- `app/(nativeTabsDemo)/profile.tsx`: Profile tab with user stats, menu, and activity feed.
 - `app/(stack)/_layout.tsx`: Declares a stack navigator and its screens.
 - `app/(stackNavigator)/_layout.jsx`: Advanced stack navigator with comprehensive navigation features.
 - `app/(stackNavigator)/scScreenSeven.jsx`: Navigation events demo with real-time logging.
@@ -155,6 +165,114 @@ import { useLocalSearchParams } from 'expo-router';
 
 const { name } = useLocalSearchParams();
 ```
+
+### Native Tabs Demo
+
+The `(nativeTabsDemo)` group demonstrates the implementation of native tabs using Expo Router's experimental native tabs feature (available in SDK 54+).
+
+#### Features Demonstrated
+- **Native Tab Bar**: Uses the native system tab bar for authentic platform experience
+- **Cross-Platform Icons**: SF Symbols for iOS and Material Design icons for Android
+- **Badge Support**: Notification badges on tab items
+- **Interactive Content**: Rich, interactive screens with modern UI components
+- **Proper Component Structure**: Follows Expo Router's native tabs best practices
+
+#### Implementation Details
+
+**Layout Configuration** (`_layout.tsx`):
+```tsx
+import { NativeTabs, Icon, Label, Badge, VectorIcon } from 'expo-router/unstable-native-tabs';
+import { MaterialIcons } from '@expo/vector-icons';
+
+export default function NativeTabsDemoLayout() {
+    return (
+        <NativeTabs>
+            <NativeTabs.Trigger name="index">
+                <Icon src={<VectorIcon family={MaterialIcons} name="home" />} />
+                <Label>Home</Label>
+            </NativeTabs.Trigger>
+            <NativeTabs.Trigger name="settings">
+                <Icon src={<VectorIcon family={MaterialIcons} name="settings" />} />
+                <Label>Settings</Label>
+            </NativeTabs.Trigger>
+            <NativeTabs.Trigger name="profile">
+                <Icon src={<VectorIcon family={MaterialIcons} name="person" />} />
+                <Label>Profile</Label>
+                <Badge>4</Badge>
+            </NativeTabs.Trigger>
+        </NativeTabs>
+    );
+}
+```
+
+#### Tab Screens Overview
+
+**Home Tab** (`index.tsx`):
+- Welcome screen with app introduction
+- Feature highlights of Native tabs
+- Clean, modern UI with cards and shadows
+- Scrollable content with comprehensive information
+
+**Settings Tab** (`settings.tsx`):
+- Interactive toggle switches for notifications, dark mode, and location
+- Settings sections with proper grouping
+- About section with app version and legal links
+- Modern iOS-style settings interface
+
+**Profile Tab** (`profile.tsx`):
+- User profile with avatar and notification badge
+- Statistics display (Posts, Followers, Following)
+- Menu items with icons and navigation arrows
+- Recent activity feed with timestamps
+- Destructive action styling for logout
+
+#### Key Features
+
+**Icon Implementation**:
+- **VectorIcon Component**: Uses `@expo/vector-icons` for reliable cross-platform icons
+- **MaterialIcons Family**: Standard Material Design icons that work on all platforms
+- **Proper Structure**: Icons and labels are separate components for better control
+
+**Badge System**:
+- **Notification Badge**: Profile tab shows a red badge with notification count
+- **Customizable**: Badge content can be dynamic (currently shows "4")
+- **Platform Native**: Uses native badge styling for authentic appearance
+
+**UI/UX Features**:
+- **Modern Design**: Clean, card-based layouts with shadows and proper spacing
+- **Interactive Elements**: Toggle switches, buttons, and touchable components
+- **Responsive Layout**: Proper scrolling and content organization
+- **Platform Consistency**: Follows platform design guidelines
+
+#### How to Access
+1. Navigate to `/(nativeTabsDemo)` from the main screen
+2. Use the tab bar to switch between Home, Settings, and Profile
+3. Interact with the various UI components in each tab
+4. Notice the native tab bar behavior and styling
+
+#### Native Tabs vs JavaScript Tabs
+
+| Feature | Native Tabs | JavaScript Tabs |
+|---------|-------------|-----------------|
+| **Performance** | Native system performance | JavaScript rendering |
+| **Styling** | Platform-native appearance | Fully customizable |
+| **Icons** | SF Symbols (iOS), Drawables (Android) | Any React component |
+| **Badges** | Native badge system | Custom implementation |
+| **Platform Behavior** | Follows platform conventions | Custom behavior |
+| **Customization** | Limited to platform options | Unlimited customization |
+
+#### Best Practices Demonstrated
+
+1. **Component Structure**: Proper separation of Icon and Label components
+2. **Cross-Platform Icons**: Using VectorIcon for reliable icon display
+3. **Badge Implementation**: Native badge system for notifications
+4. **Content Organization**: Well-structured, scrollable content
+5. **Interactive Elements**: Proper touch handling and state management
+
+#### Requirements
+- **Expo SDK 54+**: Native tabs are experimental and require SDK 54 or later
+- **@expo/vector-icons**: For cross-platform icon support
+- **expo-router**: For file-based routing and native tabs integration
 
 ### Navigation & Deep Linking
 This project uses Expo Router (see `app.json` → `plugins: ["expo-router"]`). The configured scheme is `ExpoNavigation`, which enables deep linking such as:
@@ -815,6 +933,7 @@ const NavigationDemo = () => {
 #### Core Documentation
 - Expo: `https://docs.expo.dev/`
 - Expo Router: `https://expo.dev/router`
+- Native Tabs: `https://docs.expo.dev/router/advanced/native-tabs/`
 - React Native: `https://reactnative.dev/`
 - React Hooks: `https://react.dev/reference/react`
 
