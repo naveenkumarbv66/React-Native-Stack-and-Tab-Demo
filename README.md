@@ -58,6 +58,7 @@ app/
     registerScreen.jsx
   (nativeTabsDemo)/
     _layout.tsx
+    BadgeContext.tsx
     index.tsx
     profile.tsx
     settings.tsx
@@ -97,9 +98,10 @@ Key points:
 - `app/index.jsx`: Root route.
 - `app/(tab)/_layout.jsx`: Declares a tab navigator and tab screens.
 - `app/(nativeTabsDemo)/_layout.tsx`: Native tabs layout with SF Symbols and Material Design icons.
-- `app/(nativeTabsDemo)/index.tsx`: Home tab with welcome content and feature overview.
+- `app/(nativeTabsDemo)/BadgeContext.tsx`: React Context for dynamic badge state management.
+- `app/(nativeTabsDemo)/index.tsx`: Home tab with welcome content, feature overview, and badge controls.
 - `app/(nativeTabsDemo)/settings.tsx`: Settings tab with interactive switches and menu items.
-- `app/(nativeTabsDemo)/profile.tsx`: Profile tab with user stats, menu, and activity feed.
+- `app/(nativeTabsDemo)/profile.tsx`: Profile tab with user stats, badge controls, menu, and activity feed.
 - `app/(stack)/_layout.tsx`: Declares a stack navigator and its screens.
 - `app/(stackNavigator)/_layout.jsx`: Advanced stack navigator with comprehensive navigation features.
 - `app/(stackNavigator)/scScreenSeven.jsx`: Navigation events demo with real-time logging.
@@ -173,7 +175,8 @@ The `(nativeTabsDemo)` group demonstrates the implementation of native tabs usin
 #### Features Demonstrated
 - **Native Tab Bar**: Uses the native system tab bar for authentic platform experience
 - **Cross-Platform Icons**: SF Symbols for iOS and Material Design icons for Android
-- **Badge Support**: Notification badges on tab items
+- **Dynamic Badge System**: Real-time badge updates with React Context state management
+- **Interactive Badge Controls**: User-controlled badge increment, decrement, and clear functionality
 - **Interactive Content**: Rich, interactive screens with modern UI components
 - **Proper Component Structure**: Follows Expo Router's native tabs best practices
 
@@ -183,8 +186,11 @@ The `(nativeTabsDemo)` group demonstrates the implementation of native tabs usin
 ```tsx
 import { NativeTabs, Icon, Label, Badge, VectorIcon } from 'expo-router/unstable-native-tabs';
 import { MaterialIcons } from '@expo/vector-icons';
+import { BadgeProvider, useBadge } from './BadgeContext';
 
-export default function NativeTabsDemoLayout() {
+function NativeTabsContent() {
+    const { badgeCount } = useBadge();
+
     return (
         <NativeTabs>
             <NativeTabs.Trigger name="index">
@@ -198,11 +204,56 @@ export default function NativeTabsDemoLayout() {
             <NativeTabs.Trigger name="profile">
                 <Icon src={<VectorIcon family={MaterialIcons} name="person" />} />
                 <Label>Profile</Label>
-                <Badge>4</Badge>
+                {badgeCount > 0 && <Badge>{badgeCount}</Badge>}
             </NativeTabs.Trigger>
         </NativeTabs>
     );
 }
+
+export default function NativeTabsDemoLayout() {
+    return (
+        <BadgeProvider>
+            <NativeTabsContent />
+        </BadgeProvider>
+    );
+}
+```
+
+**Badge Context** (`BadgeContext.tsx`):
+```tsx
+import React, { createContext, useContext, useState, ReactNode } from 'react';
+
+interface BadgeContextType {
+    badgeCount: number;
+    setBadgeCount: (count: number) => void;
+    incrementBadge: () => void;
+    decrementBadge: () => void;
+    clearBadge: () => void;
+}
+
+const BadgeContext = createContext<BadgeContextType | undefined>(undefined);
+
+export const useBadge = () => {
+    const context = useContext(BadgeContext);
+    if (!context) {
+        throw new Error('useBadge must be used within a BadgeProvider');
+    }
+    return context;
+};
+
+export const BadgeProvider: React.FC<BadgeProviderProps> = ({ children }) => {
+    const [badgeCount, setBadgeCount] = useState(4);
+
+    const incrementBadge = () => setBadgeCount(prev => prev + 1);
+    const decrementBadge = () => setBadgeCount(prev => Math.max(0, prev - 1));
+    const clearBadge = () => setBadgeCount(0);
+
+    return (
+        <BadgeContext.Provider value={{ badgeCount, setBadgeCount, incrementBadge, decrementBadge, clearBadge }}>
+            {children}
+        </BadgeContext.Provider>
+    );
+};
 ```
 
 #### Tab Screens Overview
@@ -210,6 +261,8 @@ export default function NativeTabsDemoLayout() {
 **Home Tab** (`index.tsx`):
 - Welcome screen with app introduction
 - Feature highlights of Native tabs
+- Dynamic badge demo section with interactive controls
+- Real-time badge count display
 - Clean, modern UI with cards and shadows
 - Scrollable content with comprehensive information
 
@@ -220,8 +273,10 @@ export default function NativeTabsDemoLayout() {
 - Modern iOS-style settings interface
 
 **Profile Tab** (`profile.tsx`):
-- User profile with avatar and notification badge
+- User profile with avatar and dynamic notification badge
 - Statistics display (Posts, Followers, Following)
+- Interactive badge controls section with +1, -1, and Clear buttons
+- Real-time badge count display and management
 - Menu items with icons and navigation arrows
 - Recent activity feed with timestamps
 - Destructive action styling for logout
@@ -233,9 +288,12 @@ export default function NativeTabsDemoLayout() {
 - **MaterialIcons Family**: Standard Material Design icons that work on all platforms
 - **Proper Structure**: Icons and labels are separate components for better control
 
-**Badge System**:
-- **Notification Badge**: Profile tab shows a red badge with notification count
-- **Customizable**: Badge content can be dynamic (currently shows "4")
+**Dynamic Badge System**:
+- **Real-time Updates**: Badge count updates instantly across all components
+- **React Context**: Centralized state management for badge count
+- **Interactive Controls**: User can increment, decrement, or clear badge count
+- **Conditional Display**: Badge only appears when count > 0
+- **Cross-Component Sync**: Tab badge and profile avatar badge stay synchronized
 - **Platform Native**: Uses native badge styling for authentic appearance
 
 **UI/UX Features**:
@@ -247,8 +305,12 @@ export default function NativeTabsDemoLayout() {
 #### How to Access
 1. Navigate to `/(nativeTabsDemo)` from the main screen
 2. Use the tab bar to switch between Home, Settings, and Profile
-3. Interact with the various UI components in each tab
-4. Notice the native tab bar behavior and styling
+3. **Try the Dynamic Badge Demo**:
+   - Use the badge controls (+1, -1, Clear) on Home or Profile tabs
+   - Watch the badge count update in real-time on the tab bar
+   - Notice how the profile avatar badge stays synchronized
+4. Interact with the various UI components in each tab
+5. Notice the native tab bar behavior and styling
 
 #### Native Tabs vs JavaScript Tabs
 
@@ -265,14 +327,67 @@ export default function NativeTabsDemoLayout() {
 
 1. **Component Structure**: Proper separation of Icon and Label components
 2. **Cross-Platform Icons**: Using VectorIcon for reliable icon display
-3. **Badge Implementation**: Native badge system for notifications
-4. **Content Organization**: Well-structured, scrollable content
-5. **Interactive Elements**: Proper touch handling and state management
+3. **State Management**: React Context for centralized badge state management
+4. **Dynamic Badge Implementation**: Real-time badge updates with conditional rendering
+5. **Content Organization**: Well-structured, scrollable content
+6. **Interactive Elements**: Proper touch handling and state management
+7. **Context Pattern**: Custom hook (`useBadge`) for clean context consumption
+8. **Conditional Rendering**: Badge only displays when count > 0
 
 #### Requirements
 - **Expo SDK 54+**: Native tabs are experimental and require SDK 54 or later
 - **@expo/vector-icons**: For cross-platform icon support
 - **expo-router**: For file-based routing and native tabs integration
+- **React Context**: For dynamic badge state management
+- **@react-navigation/native**: For navigation hooks (useFocusEffect)
+
+#### Dynamic Badge System
+
+The Native Tabs Demo includes a comprehensive dynamic badge system that demonstrates real-time state management and cross-component synchronization.
+
+**Key Components**:
+
+1. **BadgeContext** (`BadgeContext.tsx`):
+   - Centralized state management using React Context
+   - Provides badge count and control functions
+   - Custom hook (`useBadge`) for easy consumption
+   - TypeScript support with proper type definitions
+
+2. **Badge Functions**:
+   - `incrementBadge()`: Increases badge count by 1
+   - `decrementBadge()`: Decreases badge count by 1 (minimum 0)
+   - `clearBadge()`: Sets badge count to 0
+   - `setBadgeCount(count)`: Sets custom badge count
+
+3. **Real-time Updates**:
+   - Badge count updates instantly across all components
+   - Tab bar badge and profile avatar badge stay synchronized
+   - Conditional rendering (badge only shows when count > 0)
+
+**Usage Example**:
+```tsx
+import { useBadge } from './BadgeContext';
+
+const MyComponent = () => {
+    const { badgeCount, incrementBadge, decrementBadge, clearBadge } = useBadge();
+    
+    return (
+        <View>
+            <Text>Current badge count: {badgeCount}</Text>
+            <Button title="+1" onPress={incrementBadge} />
+            <Button title="-1" onPress={decrementBadge} />
+            <Button title="Clear" onPress={clearBadge} />
+        </View>
+    );
+};
+```
+
+**Benefits**:
+- **Centralized State**: Single source of truth for badge count
+- **Real-time Sync**: All components update simultaneously
+- **Type Safety**: Full TypeScript support
+- **Easy Integration**: Simple hook-based API
+- **Performance**: Efficient re-renders with React Context
 
 ### Navigation & Deep Linking
 This project uses Expo Router (see `app.json` → `plugins: ["expo-router"]`). The configured scheme is `ExpoNavigation`, which enables deep linking such as:
@@ -954,6 +1069,7 @@ const NavigationDemo = () => {
 #### Project-Specific
 - Generic Back Button: `app/(stackNavigator)/components/README.md`
 - Navigation Events Demo: `app/(stackNavigator)/scScreenSeven.jsx`
+- Native Tabs Demo: `app/(nativeTabsDemo)/_layout.tsx`
 
 ---
 If you run into issues, please include your OS, Node version, device/emulator, and error logs when reporting.

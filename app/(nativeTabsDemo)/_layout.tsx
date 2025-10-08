@@ -1,7 +1,10 @@
 import { NativeTabs, Icon, Label, Badge, VectorIcon } from 'expo-router/unstable-native-tabs';
 import { MaterialIcons } from '@expo/vector-icons';
+import { BadgeProvider, useBadge } from './BadgeContext';
 
-export default function NativeTabsDemoLayout() {
+function NativeTabsContent() {
+    const { badgeCount } = useBadge();
+
     return (
         <NativeTabs>
             <NativeTabs.Trigger name="index">
@@ -15,8 +18,16 @@ export default function NativeTabsDemoLayout() {
             <NativeTabs.Trigger name="profile">
                 <Icon src={<VectorIcon family={MaterialIcons} name="person" />} />
                 <Label>Profile</Label>
-                <Badge>4</Badge>
+                {badgeCount > 0 && <Badge>{badgeCount.toString()}</Badge>}
             </NativeTabs.Trigger>
         </NativeTabs>
+    );
+}
+
+export default function NativeTabsDemoLayout() {
+    return (
+        <BadgeProvider>
+            <NativeTabsContent />
+        </BadgeProvider>
     );
 }

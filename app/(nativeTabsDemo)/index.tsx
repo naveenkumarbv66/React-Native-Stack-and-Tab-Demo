@@ -1,6 +1,8 @@
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { useBadge } from './BadgeContext';
 
 const HomeTab = () => {
+    const { badgeCount, incrementBadge, decrementBadge, clearBadge } = useBadge();
     return (
         <ScrollView style={styles.container}>
             <View style={styles.content}>
@@ -16,6 +18,23 @@ const HomeTab = () => {
                 <View style={styles.card}>
                     <Text style={styles.cardTitle}>Navigation</Text>
                     <Text style={styles.cardText}>Tap on the tabs below to navigate between different sections of the app.</Text>
+                </View>
+                
+                <View style={styles.card}>
+                    <Text style={styles.cardTitle}>Dynamic Badge Demo</Text>
+                    <Text style={styles.cardText}>Current badge count: {badgeCount.toString()}</Text>
+                    <Text style={styles.cardText}>Try the badge controls in the Profile tab to see the badge update dynamically!</Text>
+                    <View style={styles.badgeButtonsContainer}>
+                        <TouchableOpacity style={styles.badgeButton} onPress={incrementBadge}>
+                            <Text style={styles.badgeButtonText}>+1</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.badgeButton} onPress={decrementBadge}>
+                            <Text style={styles.badgeButtonText}>-1</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.badgeButton, styles.clearButton]} onPress={clearBadge}>
+                            <Text style={[styles.badgeButtonText, styles.clearButtonText]}>Clear</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
         </ScrollView>
@@ -71,5 +90,30 @@ const styles = StyleSheet.create({
         color: '#666',
         lineHeight: 24,
         marginBottom: 5,
+    },
+    badgeButtonsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        marginTop: 15,
+    },
+    badgeButton: {
+        backgroundColor: '#007AFF',
+        paddingHorizontal: 15,
+        paddingVertical: 8,
+        borderRadius: 6,
+        minWidth: 50,
+        alignItems: 'center',
+    },
+    badgeButtonText: {
+        color: 'white',
+        fontSize: 14,
+        fontWeight: 'bold',
+    },
+    clearButton: {
+        backgroundColor: '#FF3B30',
+    },
+    clearButtonText: {
+        color: 'white',
     },
 });

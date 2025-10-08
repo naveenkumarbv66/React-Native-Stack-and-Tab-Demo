@@ -1,6 +1,8 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { useBadge } from './BadgeContext';
 
 const ProfileTab = () => {
+    const { badgeCount, incrementBadge, decrementBadge, clearBadge } = useBadge();
     const userStats = [
         { label: 'Posts', value: '42' },
         { label: 'Followers', value: '1.2K' },
@@ -24,9 +26,11 @@ const ProfileTab = () => {
                         <View style={styles.avatar}>
                             <Text style={styles.avatarText}>JD</Text>
                         </View>
-                        <View style={styles.badge}>
-                            <Text style={styles.badgeText}>3</Text>
-                        </View>
+                        {badgeCount > 0 && (
+                            <View style={styles.badge}>
+                                <Text style={styles.badgeText}>{badgeCount.toString()}</Text>
+                            </View>
+                        )}
                     </View>
                     <Text style={styles.name}>John Doe</Text>
                     <Text style={styles.username}>@johndoe</Text>
@@ -41,6 +45,23 @@ const ProfileTab = () => {
                             <Text style={styles.statLabel}>{stat.label}</Text>
                         </View>
                     ))}
+                </View>
+
+                {/* Badge Controls */}
+                <View style={styles.badgeControlsSection}>
+                    <Text style={styles.sectionTitle}>Badge Controls</Text>
+                    <Text style={styles.badgeInfo}>Current badge count: {badgeCount.toString()}</Text>
+                    <View style={styles.badgeButtonsContainer}>
+                        <TouchableOpacity style={styles.badgeButton} onPress={incrementBadge}>
+                            <Text style={styles.badgeButtonText}>+1</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.badgeButton} onPress={decrementBadge}>
+                            <Text style={styles.badgeButtonText}>-1</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.badgeButton, styles.clearButton]} onPress={clearBadge}>
+                            <Text style={[styles.badgeButtonText, styles.clearButtonText]}>Clear</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
 
                 {/* Menu Items */}
@@ -282,5 +303,49 @@ const styles = StyleSheet.create({
     activityTime: {
         fontSize: 14,
         color: '#666',
+    },
+    badgeControlsSection: {
+        backgroundColor: 'white',
+        borderRadius: 12,
+        padding: 20,
+        marginBottom: 20,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    badgeInfo: {
+        fontSize: 16,
+        color: '#666',
+        marginBottom: 15,
+        textAlign: 'center',
+    },
+    badgeButtonsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+    },
+    badgeButton: {
+        backgroundColor: '#007AFF',
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 8,
+        minWidth: 60,
+        alignItems: 'center',
+    },
+    badgeButtonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    clearButton: {
+        backgroundColor: '#FF3B30',
+    },
+    clearButtonText: {
+        color: 'white',
     },
 });
