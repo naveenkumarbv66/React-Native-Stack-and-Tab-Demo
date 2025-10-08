@@ -17,6 +17,9 @@ const homeScreen = () => {
             <Link href='/(dynamicRoutes)' style={styles.link}>
                 Dynamic Routes Demo
             </Link>
+            <Link href='/(customStack)' style={styles.link}>
+                Custom Stack Routes Demo
+            </Link>
         </View >
     )
 }

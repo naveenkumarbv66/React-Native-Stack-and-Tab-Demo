@@ -133,10 +133,160 @@ For more on file‑based routing, see Expo Router docs.
 - iOS simulator not launching: Ensure Xcode and Command Line Tools are installed, and an iOS Simulator device is available.
 - Android emulator not launching: Open Android Studio > Device Manager, start a virtual device, then run `npm run android`.
 
+### React Hooks Demo
+
+This project demonstrates the usage of three important React hooks in the context of React Native and Expo Router:
+
+#### useEffect Hook
+
+**Definition**: `useEffect` is a React hook that lets you perform side effects in functional components. It's equivalent to `componentDidMount`, `componentDidUpdate`, and `componentWillUnmount` combined in class components.
+
+**When to Use**:
+- Data fetching from APIs
+- Setting up subscriptions or timers
+- Manually changing the DOM
+- Cleanup operations
+- Navigation options configuration
+
+**Example from Project**:
+```javascript
+import { useEffect } from 'react';
+import { useNavigation } from 'expo-router';
+
+const MyComponent = () => {
+    const navigation = useNavigation();
+    
+    useEffect(() => {
+        // Configure navigation options when component mounts
+        navigation.setOptions({ headerShown: false });
+    }, [navigation]); // Dependency array ensures effect runs when navigation changes
+    
+    return <View>...</View>;
+};
+```
+
+**Use Cases**:
+- **Component Mount**: Run code when component first renders
+- **Dependency Updates**: Re-run effect when specific values change
+- **Cleanup**: Return a cleanup function to prevent memory leaks
+- **Navigation Configuration**: Dynamically set navigation options
+
+#### useNavigation Hook
+
+**Definition**: `useNavigation` is an Expo Router hook that provides access to the navigation object, allowing you to programmatically control navigation behavior and access navigation state.
+
+**When to Use**:
+- Programmatic navigation control
+- Accessing navigation state
+- Setting navigation options dynamically
+- Listening to navigation events
+- Custom navigation logic
+
+**Example from Project**:
+```javascript
+import { useNavigation } from 'expo-router';
+
+const CustomScreen = () => {
+    const navigation = useNavigation();
+    
+    useEffect(() => {
+        // Dynamically hide header
+        navigation.setOptions({ headerShown: false });
+    }, [navigation]);
+    
+    return <View>...</View>;
+};
+```
+
+**Use Cases**:
+- **Dynamic Navigation Options**: Change header, title, or other screen options
+- **Navigation State Access**: Get current route, params, or navigation history
+- **Event Listeners**: Listen to focus, blur, or other navigation events
+- **Custom Navigation Logic**: Implement complex navigation patterns
+
+#### useRouter Hook
+
+**Definition**: `useRouter` is an Expo Router hook that provides imperative navigation methods for programmatic navigation, including push, replace, back, dismiss, and other navigation actions.
+
+**When to Use**:
+- Programmatic navigation (push, replace, back)
+- Modal dismissal
+- Navigation with parameters
+- Complex navigation flows
+- Conditional navigation logic
+
+**Example from Project**:
+```javascript
+import { useRouter } from 'expo-router';
+
+const NavigationDemo = () => {
+    const router = useRouter();
+    
+    const handleDismiss = (count) => {
+        router.dismiss(count); // Dismiss specific number of screens
+    };
+    
+    const handleGoToRoot = () => {
+        router.dismissTo('/'); // Navigate to root screen
+    };
+    
+    const handleDismissAll = () => {
+        router.dismissAll(); // Dismiss all modals/screens
+    };
+    
+    const handleCanDismiss = (count) => {
+        if (router.canDismiss()) {
+            router.dismiss(count); // Conditional dismissal
+        }
+    };
+    
+    return (
+        <View>
+            <Button title="Dismiss 3 screens" onPress={() => handleDismiss(3)} />
+            <Button title="Go to Root" onPress={handleGoToRoot} />
+            <Button title="Dismiss All" onPress={handleDismissAll} />
+        </View>
+    );
+};
+```
+
+**Use Cases**:
+- **Modal Management**: Dismiss modals with `dismiss()`, `dismissAll()`, `dismissTo()`
+- **Programmatic Navigation**: Navigate without user interaction
+- **Parameter Passing**: Pass data between screens
+- **Conditional Navigation**: Navigate based on app state or user permissions
+- **Deep Linking**: Handle external navigation requests
+
+#### Hook Comparison
+
+| Hook | Purpose | Primary Use Case | Returns |
+|------|---------|------------------|---------|
+| `useEffect` | Side effects | Component lifecycle management | None (void) |
+| `useNavigation` | Navigation state/options | Access navigation object | Navigation object |
+| `useRouter` | Imperative navigation | Programmatic navigation | Router object |
+
+#### Best Practices
+
+1. **useEffect**:
+   - Always include dependency arrays
+   - Clean up subscriptions and timers
+   - Avoid infinite re-renders
+
+2. **useNavigation**:
+   - Use for accessing navigation state
+   - Ideal for dynamic screen options
+   - Don't use for navigation actions (use `useRouter` instead)
+
+3. **useRouter**:
+   - Use for programmatic navigation
+   - Handle modal dismissal
+   - Pass parameters between screens
+
 ### Useful Links
 - Expo: `https://docs.expo.dev/`
 - Expo Router: `https://expo.dev/router`
 - React Native: `https://reactnative.dev/`
+- React Hooks: `https://react.dev/reference/react`
 
 ---
 If you run into issues, please include your OS, Node version, device/emulator, and error logs when reporting.
