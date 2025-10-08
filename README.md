@@ -133,6 +133,193 @@ For more on file‑based routing, see Expo Router docs.
 - iOS simulator not launching: Ensure Xcode and Command Line Tools are installed, and an iOS Simulator device is available.
 - Android emulator not launching: Open Android Studio > Device Manager, start a virtual device, then run `npm run android`.
 
+### React Navigation Stack Navigator Demo
+
+This project demonstrates the usage of React Navigation's Stack Navigator with comprehensive navigation methods and parameter passing.
+
+#### Stack Navigator Setup
+
+**Definition**: A stack navigator provides a way for your app to transition between screens where each new screen is placed on top of a stack.
+
+**Implementation**:
+```javascript
+import { createStackNavigator } from '@react-navigation/stack';
+
+const Stack = createStackNavigator();
+
+export default function CustomNavigationStackLayout() {
+    return (
+        <Stack.Navigator
+            screenOptions={{
+                headerStyle: {
+                    backgroundColor: '#f4511e',
+                },
+                headerTintColor: '#fff',
+                headerTitleStyle: {
+                    fontWeight: 'bold',
+                }
+            }}>
+            <Stack.Screen name="Stack Navigator Home" component={index} />
+            <Stack.Screen name="Screen Two" component={snScreenTwo} />
+            <Stack.Screen name="Screen Three" component={snScreenThree} />
+            <Stack.Screen name="Screen Four" component={scScreenFour} />
+        </Stack.Navigator>
+    );
+}
+```
+
+#### Navigation Methods
+
+This project demonstrates all major React Navigation methods:
+
+##### 1. navigation.navigate()
+**Purpose**: Navigate to a screen, pushing it onto the stack if it's not already there.
+
+**When to Use**:
+- Standard navigation between screens
+- Passing parameters to destination screen
+- Conditional navigation
+
+**Example from Project**:
+```javascript
+// From index.jsx
+navigation.navigate('Screen Two', {
+    itemName: 'From Screen One',
+    itemId: 1,
+});
+
+// From snScreenTwo.jsx
+navigation.navigate('Screen Three', {
+    itemName: 'from Screen Two',
+    itemId: 2,
+});
+```
+
+##### 2. navigation.replace()
+**Purpose**: Replace the current screen with a new one, removing the current screen from the stack.
+
+**When to Use**:
+- Login/logout flows
+- Preventing back navigation to certain screens
+- Replacing screens with updated data
+
+**Example from Project**:
+```javascript
+// From snScreenThree.jsx
+navigation.replace('Screen Four', {
+    itemName: 'From Screen Three with replace',
+    itemId: 33,
+});
+```
+
+##### 3. navigation.push()
+**Purpose**: Push a new screen onto the stack, even if it already exists.
+
+**When to Use**:
+- Allowing multiple instances of the same screen
+- Deep navigation scenarios
+- Modal-like behavior
+
+**Example from Project**:
+```javascript
+// From snScreenThree.jsx
+navigation.push('Screen Four', {
+    itemName: 'From Screen Three with push',
+    itemId: 333,
+});
+```
+
+##### 4. navigation.pop()
+**Purpose**: Remove the current screen from the stack and go back to the previous one.
+
+**When to Use**:
+- Simple back navigation
+- Removing current screen from history
+- Programmatic back button behavior
+
+**Example from Project**:
+```javascript
+// From snScreenThree.jsx
+navigation.pop();
+```
+
+##### 5. navigation.popTo()
+**Purpose**: Pop back to a specific screen in the stack, removing all screens above it.
+
+**When to Use**:
+- Jumping back multiple screens
+- Returning to a specific point in navigation
+- Clearing intermediate screens
+
+**Example from Project**:
+```javascript
+// From scScreenFour.jsx
+navigation.popTo('Screen Two', { info: 'Used popTo to come back' });
+```
+
+##### 6. navigation.popToTop()
+**Purpose**: Pop back to the first screen in the stack, removing all other screens.
+
+**When to Use**:
+- Returning to home screen
+- Clearing entire navigation stack
+- Logout scenarios
+
+**Example from Project**:
+```javascript
+// From scScreenFour.jsx
+navigation.popToTop();
+```
+
+##### 7. navigation.goBack()
+**Purpose**: Go back to the previous screen (equivalent to pop() but more explicit).
+
+**When to Use**:
+- Explicit back navigation
+- Custom back button implementation
+- Conditional back navigation
+
+**Example from Project**:
+```javascript
+// From scScreenFour.jsx
+navigation.goBack();
+```
+
+#### Parameter Passing
+
+**Receiving Parameters**:
+```javascript
+const MyScreen = ({ navigation, route }) => {
+    const { itemName, itemId } = route.params;
+    
+    return (
+        <View>
+            <Text>{`Received itemName: ${itemName} and itemId: ${itemId}`}</Text>
+        </View>
+    );
+};
+```
+
+**Navigation Methods Comparison**:
+
+| Method | Stack Behavior | Use Case | Parameters |
+|--------|----------------|----------|------------|
+| `navigate()` | Pushes if not in stack, navigates if exists | Standard navigation | ✅ |
+| `replace()` | Replaces current screen | Login flows, prevent back | ✅ |
+| `push()` | Always pushes new screen | Multiple instances | ✅ |
+| `pop()` | Removes current screen | Simple back | ❌ |
+| `popTo()` | Goes to specific screen | Jump back multiple | ✅ |
+| `popToTop()` | Goes to first screen | Return to home | ❌ |
+| `goBack()` | Goes to previous screen | Explicit back | ❌ |
+
+#### Best Practices
+
+1. **Parameter Naming**: Use consistent parameter names across screens
+2. **Navigation Flow**: Plan your navigation stack to avoid deep nesting
+3. **Back Button**: Consider using `goBack()` for explicit back navigation
+4. **Replace vs Navigate**: Use `replace()` when you don't want users to go back
+5. **Parameter Validation**: Always check if parameters exist before using them
+
 ### React Hooks Demo
 
 This project demonstrates the usage of three important React hooks in the context of React Native and Expo Router:
@@ -287,6 +474,8 @@ const NavigationDemo = () => {
 - Expo Router: `https://expo.dev/router`
 - React Native: `https://reactnative.dev/`
 - React Hooks: `https://react.dev/reference/react`
+- React Navigation: `https://reactnavigation.org/`
+- Stack Navigator: `https://reactnavigation.org/docs/stack-navigator/`
 
 ---
 If you run into issues, please include your OS, Node version, device/emulator, and error logs when reporting.

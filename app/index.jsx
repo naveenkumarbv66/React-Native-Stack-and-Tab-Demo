@@ -20,6 +20,9 @@ const homeScreen = () => {
             <Link href='/(customStack)' style={styles.link}>
                 Custom Stack Routes Demo
             </Link>
+            <Link href='/(stackNavigator)' style={styles.link}>
+                Stack Navigator Demo
+            </Link>
         </View >
     )
 }
