@@ -1,8 +1,9 @@
-import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Button, TouchableOpacity, Platform } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'; // Assuming you are using Expo
+import { useNavigationState } from '@react-navigation/native';
 import React from 'react'
-import useGenericBackButton from './hooks/useGenericBackButton'
 
-const scScreenFive = ({ navigation }) => {
+const scScreenSix = ({ navigation }) => {
     // Use React.useState to create a state for the count.
     const [count, setCount] = React.useState(0);
 
@@ -17,8 +18,22 @@ const scScreenFive = ({ navigation }) => {
         })
     }
 
-    // Use the generic back button hook
-    useGenericBackButton(navigation);
+    // Use useNavigationState hook to get the navigation state.
+    // We use a selector function to pick out the previous route name.
+    const previousRouteName = useNavigationState(state => {
+        // Get the current route index
+        const currentIndex = state.index;
+        const routes = state.routes;
+
+        // If we're not on the first screen, get the previous route
+        if (currentIndex > 0) {
+            const previousRoute = routes[currentIndex - 1];
+            return previousRoute ? previousRoute.name : 'Back';
+        }
+
+        // If we're on the first screen, return 'Back' as fallback
+        return 'Back';
+    });
 
     // Use React.useLayoutEffect to set the header options after the component has rendered.
     // This hook ensures the header is updated with the current state.
@@ -41,9 +56,22 @@ const scScreenFive = ({ navigation }) => {
                 </View>
             ),
         });
-    }, [navigation, count]); // The dependency array ensures this runs when the navigation object or count changes.
+    }, [navigation, previousRouteName]); // The dependency array ensures this runs when the navigation object changes.
 
-    // Note: headerLeft is now handled by useGenericBackButton hook
+    React.useLayoutEffect(() => {
+        navigation.setOptions({
+            // Set the headerLeft option only on Android.
+            headerLeft: () =>
+                Platform.OS === 'android' ? (
+                    <TouchableOpacity
+                        onPress={() => navigation.goBack()}
+                        style={styles.backButtonContainer}>
+                        <Ionicons name="arrow-back" size={24} color="white" style={{ marginLeft: 24 }} />
+                        <Text style={styles.backButtonText}>{previousRouteName}</Text>
+                    </TouchableOpacity>
+                ) : undefined, // Keep default iOS behavior
+        });
+    }, [navigation, previousRouteName]);
 
     return (
         <View style={styles.container}>
@@ -93,5 +121,17 @@ const styles = StyleSheet.create({
     countText: {
         fontSize: 24,
         fontWeight: 'bold',
+    },
+
+    backButtonContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginLeft: -10, // Adjust this value to align the button correctly.
+        paddingRight: 10,
+    },
+    backButtonText: {
+        marginHorizontal: 5,
+        fontSize: 16,
+        color: 'white',
     },
 })

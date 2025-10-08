@@ -1,8 +1,13 @@
 import { StyleSheet, Text, View, Button } from 'react-native'
 import React from 'react'
+import useGenericBackButton from './hooks/useGenericBackButton'
 
 const snScreenTwo = ({ navigation, route }) => {
     const { itemName, itemId } = route.params;
+    
+    // Use the generic back button hook
+    useGenericBackButton(navigation);
+    
     return (
         <View style={styles.container}>
             <Text>snScreenTwo</Text>
