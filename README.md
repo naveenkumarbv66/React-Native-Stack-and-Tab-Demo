@@ -3,8 +3,9 @@
 A React Native application bootstrapped with Expo and organized using Expo Router. It demonstrates nested navigation via tabs, stacks, and linkable screens under the `app/` directory.
 
 ### Features
-- **Expo Router** with `tabs`, `stacks`, `link` group, `dynamic routes`, and `native tabs`
+- **Expo Router** with `tabs`, `stacks`, `link` group, `dynamic routes`, `native tabs`, and `drawer` navigation
 - **Native Tabs Demo** with SF Symbols icons and Material Design icons
+- **Drawer Navigation** with dynamic routes and parameter passing
 - Cross‑platform: iOS, Android, and Web
 - Optimized Metro bundling for web
 - Dynamic routing with parameter passing
@@ -48,6 +49,11 @@ app/
     cStackThree.jsx
     cStackTwo.jsx
     index.jsx
+  (drawerdemo)/
+    _layout.tsx
+    index.tsx
+    user/
+      [id].tsx
   (dynamicRoutes)/
     _layout.tsx
     [name].tsx
@@ -97,6 +103,9 @@ assets/
 Key points:
 - `app/index.jsx`: Root route.
 - `app/(tab)/_layout.jsx`: Declares a tab navigator and tab screens.
+- `app/(drawerdemo)/_layout.tsx`: Drawer navigator layout with drawer screens configuration.
+- `app/(drawerdemo)/index.tsx`: Home screen accessible via drawer navigation.
+- `app/(drawerdemo)/user/[id].tsx`: Dynamic user route with parameter passing in drawer context.
 - `app/(nativeTabsDemo)/_layout.tsx`: Native tabs layout with SF Symbols and Material Design icons.
 - `app/(nativeTabsDemo)/BadgeContext.tsx`: React Context for dynamic badge state management.
 - `app/(nativeTabsDemo)/index.tsx`: Home tab with welcome content, feature overview, and badge controls.
@@ -388,6 +397,198 @@ const MyComponent = () => {
 - **Type Safety**: Full TypeScript support
 - **Easy Integration**: Simple hook-based API
 - **Performance**: Efficient re-renders with React Context
+
+### Drawer Navigation Demo
+
+The `(drawerdemo)` group demonstrates the implementation of drawer navigation using Expo Router's drawer navigator, providing a slide-out menu interface for navigation.
+
+#### Features Demonstrated
+- **Drawer Navigation**: Slide-out drawer menu for easy navigation between screens
+- **Dynamic Routes**: Support for dynamic routes with parameter passing within drawer context
+- **Cross-Platform**: Works on iOS, Android, and Web with platform-appropriate styling
+- **File-Based Routing**: Leverages Expo Router's file-based routing system
+- **Screen Configuration**: Customizable drawer labels and titles
+
+#### Implementation Details
+
+**Layout Configuration** (`_layout.tsx`):
+```tsx
+import { Drawer } from 'expo-router/drawer';
+
+export default function Layout() {
+    return (
+        <Drawer>
+            <Drawer.Screen
+                name="index" // This is the name of the page and must match the url from root
+                options={{
+                    drawerLabel: 'Home',
+                    title: 'overview',
+                }}
+            />
+            <Drawer.Screen
+                name="user/[id]" // This is the name of the page and must match the url from root
+                options={{
+                    drawerLabel: 'User',
+                    title: 'overview',
+                }}
+            />
+        </Drawer>
+    );
+}
+```
+
+**Key Components**:
+
+1. **Drawer Navigator**: Uses `expo-router/drawer` for drawer navigation
+2. **Screen Configuration**: Each screen can have custom `drawerLabel` and `title`
+3. **Dynamic Routes**: Supports dynamic routes like `user/[id]` within drawer context
+4. **File-Based Structure**: Follows Expo Router's file-based routing conventions
+
+#### Drawer Screens Overview
+
+**Home Screen** (`index.tsx`):
+- Main drawer screen accessible via drawer menu
+- Simple content display demonstrating basic drawer functionality
+- Entry point for drawer navigation demo
+
+**User Screen** (`user/[id].tsx`):
+- Dynamic route that accepts an `id` parameter
+- Demonstrates parameter passing within drawer navigation context
+- Shows how dynamic routes work with drawer navigation
+
+#### Drawer Navigation Features
+
+**Navigation Methods**:
+- **Drawer Toggle**: Swipe from edge or tap hamburger menu to open/close drawer
+- **Screen Selection**: Tap drawer items to navigate to different screens
+- **Parameter Passing**: Dynamic routes support parameter passing
+- **Cross-Platform**: Native drawer behavior on iOS and Android
+
+**Configuration Options**:
+- **drawerLabel**: Custom label shown in drawer menu
+- **title**: Screen title displayed in header
+- **drawerIcon**: Custom icon for drawer menu items (optional)
+- **drawerActiveTintColor**: Color for active drawer item
+- **drawerInactiveTintColor**: Color for inactive drawer items
+
+#### Usage Examples
+
+**Basic Drawer Navigation**:
+```tsx
+import { Drawer } from 'expo-router/drawer';
+
+export default function Layout() {
+    return (
+        <Drawer>
+            <Drawer.Screen
+                name="index"
+                options={{
+                    drawerLabel: 'Home',
+                    title: 'Dashboard',
+                }}
+            />
+        </Drawer>
+    );
+}
+```
+
+**Dynamic Routes in Drawer**:
+```tsx
+<Drawer.Screen
+    name="user/[id]"
+    options={{
+        drawerLabel: 'User Profile',
+        title: 'User Details',
+    }}
+/>
+```
+
+**Accessing Parameters in Drawer Screens**:
+```tsx
+import { useLocalSearchParams } from 'expo-router';
+
+const UserScreen = () => {
+    const { id } = useLocalSearchParams();
+    
+    return (
+        <View>
+            <Text>User ID: {id}</Text>
+        </View>
+    );
+};
+```
+
+#### How to Access
+1. Navigate to `/(drawerdemo)` from the main screen
+2. Swipe from the left edge or tap the hamburger menu to open the drawer
+3. Select "Home" to view the main drawer screen
+4. Select "User" to navigate to the dynamic user route
+5. Notice the drawer menu labels and screen titles
+
+#### Drawer vs Other Navigation Types
+
+| Feature | Drawer | Tabs | Stack |
+|---------|--------|------|-------|
+| **UI Pattern** | Slide-out menu | Bottom/top tabs | Stack of screens |
+| **Space Usage** | Hidden until opened | Always visible | Full screen |
+| **Navigation** | Menu selection | Tab switching | Push/pop |
+| **Best For** | Many screens, settings | Main app sections | Sequential flows |
+| **Platform** | Universal | Universal | Universal |
+
+#### Best Practices Demonstrated
+
+1. **File Structure**: Proper organization with `_layout.tsx` for drawer configuration
+2. **Screen Naming**: Clear, descriptive screen names that match file structure
+3. **Dynamic Routes**: Proper implementation of dynamic routes within drawer context
+4. **Configuration**: Custom drawer labels and titles for better UX
+5. **Cross-Platform**: Works consistently across iOS, Android, and Web
+
+#### Requirements
+- **expo-router**: For file-based routing and drawer navigation
+- **@react-navigation/drawer**: For drawer navigation functionality (automatically included)
+- **React Native**: For cross-platform mobile development
+
+#### Advanced Drawer Features
+
+**Custom Drawer Content** (Optional):
+```tsx
+import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
+
+function CustomDrawerContent(props) {
+    return (
+        <DrawerContentScrollView {...props}>
+            <DrawerItem
+                label="Custom Item"
+                onPress={() => props.navigation.navigate('CustomScreen')}
+            />
+        </DrawerContentScrollView>
+    );
+}
+
+export default function Layout() {
+    return (
+        <Drawer drawerContent={(props) => <CustomDrawerContent {...props} />}>
+            {/* Drawer screens */}
+        </Drawer>
+    );
+}
+```
+
+**Drawer Styling**:
+```tsx
+<Drawer
+    screenOptions={{
+        drawerStyle: {
+            backgroundColor: '#f0f0f0',
+            width: 240,
+        },
+        drawerActiveTintColor: '#2196F3',
+        drawerInactiveTintColor: '#757575',
+    }}
+>
+    {/* Drawer screens */}
+</Drawer>
+```
 
 ### Navigation & Deep Linking
 This project uses Expo Router (see `app.json` → `plugins: ["expo-router"]`). The configured scheme is `ExpoNavigation`, which enables deep linking such as:
@@ -1070,6 +1271,7 @@ const NavigationDemo = () => {
 - Generic Back Button: `app/(stackNavigator)/components/README.md`
 - Navigation Events Demo: `app/(stackNavigator)/scScreenSeven.jsx`
 - Native Tabs Demo: `app/(nativeTabsDemo)/_layout.tsx`
+- Drawer Navigation Demo: `app/(drawerdemo)/_layout.tsx`
 
 ---
 If you run into issues, please include your OS, Node version, device/emulator, and error logs when reporting.
