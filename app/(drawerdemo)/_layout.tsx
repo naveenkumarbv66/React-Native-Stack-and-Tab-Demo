@@ -4,17 +4,17 @@ export default function Layout() {
     return (
         <Drawer>
             <Drawer.Screen
-                name="index" // This is the name of the page and must match the url from root
+                name="index"
                 options={{
                     drawerLabel: 'Home',
-                    title: 'overview',
+                    title: 'Home',
                 }}
             />
             <Drawer.Screen
-                name="user/[id]" // This is the name of the page and must match the url from root
+                name="notifications"
                 options={{
-                    drawerLabel: 'User',
-                    title: 'overview',
+                    drawerLabel: 'Notifications',
+                    title: 'Notifications',
                 }}
             />
         </Drawer>

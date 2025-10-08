@@ -4,41 +4,35 @@ import { useRouter } from 'expo-router';
 import { DrawerActions } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 
-function HomeScreen() {
+function NotificationsScreen() {
     const router = useRouter();
     const navigation = useNavigation();
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => router.push('/notifications')}
+            <TouchableOpacity 
+                style={styles.button} 
+                onPress={() => router.back()}
             >
-                <Text style={styles.buttonText}>Go to notifications</Text>
+                <Text style={styles.buttonText}>Go back home</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+            <TouchableOpacity 
+                style={styles.button} 
+                onPress={() => navigation.dispatch(DrawerActions.closeDrawer())}
             >
-                <Text style={styles.buttonText}>Open drawer</Text>
+                <Text style={styles.buttonText}>Close drawer</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-                style={styles.button}
+            <TouchableOpacity 
+                style={styles.button} 
                 onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
             >
                 <Text style={styles.buttonText}>Toggle drawer</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => router.push('/testDrawer')}
-            >
-                <Text style={styles.buttonText}>Go to test screen</Text>
             </TouchableOpacity>
         </View>
     );
 }
 
-export default HomeScreen;
+export default NotificationsScreen;
 
 const styles = StyleSheet.create({
     container: {

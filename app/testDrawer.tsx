@@ -4,23 +4,24 @@ import { useRouter } from 'expo-router';
 import { DrawerActions } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 
-function HomeScreen() {
+function TestDrawerScreen() {
     const router = useRouter();
     const navigation = useNavigation();
 
     return (
         <View style={styles.container}>
+            <Text style={styles.title}>Test Drawer Screen</Text>
             <TouchableOpacity
                 style={styles.button}
-                onPress={() => router.push('/notifications')}
+                onPress={() => router.push('/(drawerdemo)')}
             >
-                <Text style={styles.buttonText}>Go to notifications</Text>
+                <Text style={styles.buttonText}>Go to Home</Text>
             </TouchableOpacity>
             <TouchableOpacity
                 style={styles.button}
-                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+                onPress={() => router.push('/(drawerdemo)/notifications')}
             >
-                <Text style={styles.buttonText}>Open drawer</Text>
+                <Text style={styles.buttonText}>Go to Notifications</Text>
             </TouchableOpacity>
             <TouchableOpacity
                 style={styles.button}
@@ -28,17 +29,11 @@ function HomeScreen() {
             >
                 <Text style={styles.buttonText}>Toggle drawer</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => router.push('/testDrawer')}
-            >
-                <Text style={styles.buttonText}>Go to test screen</Text>
-            </TouchableOpacity>
         </View>
     );
 }
 
-export default HomeScreen;
+export default TestDrawerScreen;
 
 const styles = StyleSheet.create({
     container: {
@@ -46,6 +41,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         gap: 20,
+        padding: 20,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        color: '#333',
     },
     button: {
         backgroundColor: '#007AFF',
