@@ -15,6 +15,17 @@ const index = ({ navigation }) => {
                     });
                 }}
             />
+            <View style={{ margin: 10 }}></View>
+            <Button
+                title="Go to Screen Five"
+                onPress={() => {
+                    // Pass the data as the second argument
+                    navigation.navigate('Screen Five', {
+                        itemName: 'From Screen Five',
+                        itemId: 143,
+                    });
+                }}
+            />
         </View>
     )
 }

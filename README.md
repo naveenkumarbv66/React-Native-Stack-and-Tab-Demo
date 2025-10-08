@@ -312,6 +312,170 @@ const MyScreen = ({ navigation, route }) => {
 | `popToTop()` | Goes to first screen | Return to home | ❌ |
 | `goBack()` | Goes to previous screen | Explicit back | ❌ |
 
+#### Advanced Navigation Features
+
+This project also demonstrates advanced React Navigation features:
+
+##### useNavigationState Hook
+
+**Definition**: `useNavigationState` is a React Navigation hook that allows you to access the current navigation state and subscribe to its changes.
+
+**When to Use**:
+- Accessing current route information
+- Getting previous route names
+- Monitoring navigation state changes
+- Custom header implementations
+- Conditional rendering based on navigation state
+
+**Example from Project**:
+```javascript
+import { useNavigationState } from '@react-navigation/native';
+
+const MyScreen = ({ navigation }) => {
+    // Get the previous route name
+    const previousRouteName = useNavigationState(state => {
+        const currentIndex = state.index;
+        const routes = state.routes;
+        
+        if (currentIndex > 0) {
+            const previousRoute = routes[currentIndex - 1];
+            return previousRoute ? previousRoute.name : 'Back';
+        }
+        return 'Back';
+    });
+    
+    return <View>...</View>;
+};
+```
+
+**Use Cases**:
+- **Dynamic Headers**: Show different header content based on navigation state
+- **Previous Route Tracking**: Display the previous screen name in back buttons
+- **Conditional Logic**: Execute different logic based on current route
+- **State Monitoring**: Track navigation changes for analytics or debugging
+
+##### Header Customization (headerRight & headerLeft)
+
+**Definition**: React Navigation allows you to customize the header with custom left and right components.
+
+**When to Use**:
+- Adding custom buttons to headers
+- Implementing custom back buttons
+- Adding action buttons (save, edit, etc.)
+- Platform-specific header behavior
+- Custom header layouts
+
+**Example from Project**:
+```javascript
+import { useLayoutEffect } from 'react';
+import { TouchableOpacity, Text, Platform } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+
+const MyScreen = ({ navigation }) => {
+    const [count, setCount] = useState(0);
+    
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            // Custom right header with multiple buttons
+            headerRight: () => (
+                <View style={styles.headerButtonContainer}>
+                    <TouchableOpacity onPress={() => setCount(c => c + 1)}>
+                        <Text style={styles.headerButtonText}>+1</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => setCount(c => c - 1)}>
+                        <Text style={styles.headerButtonText}>-1</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => setCount(0)}>
+                        <Text style={styles.headerButtonText}>Reset</Text>
+                    </TouchableOpacity>
+                </View>
+            ),
+            
+            // Custom left header (Android only)
+            headerLeft: () =>
+                Platform.OS === 'android' ? (
+                    <TouchableOpacity
+                        onPress={() => navigation.goBack()}
+                        style={styles.backButtonContainer}>
+                        <Ionicons name="arrow-back" size={24} color="white" />
+                        <Text style={styles.backButtonText}>{previousRouteName}</Text>
+                    </TouchableOpacity>
+                ) : undefined,
+        });
+    }, [navigation, previousRouteName]);
+    
+    return <View>...</View>;
+};
+```
+
+**Use Cases**:
+- **Action Buttons**: Add save, edit, or delete buttons to headers
+- **Custom Back Buttons**: Implement custom back button with previous screen name
+- **Platform-Specific UI**: Different header behavior for iOS vs Android
+- **State Management**: Header buttons that interact with component state
+- **Navigation Actions**: Quick navigation buttons in headers
+
+##### useLayoutEffect Hook
+
+**Definition**: `useLayoutEffect` is a React hook that runs synchronously after all DOM mutations but before the browser paints.
+
+**When to Use**:
+- Setting navigation options
+- Measuring DOM elements
+- Synchronous DOM updates
+- Preventing visual flicker
+- Header customization
+
+**Example from Project**:
+```javascript
+import { useLayoutEffect } from 'react';
+
+const MyScreen = ({ navigation }) => {
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerRight: () => <CustomHeaderComponent />,
+            headerLeft: () => <CustomBackButton />,
+        });
+    }, [navigation]); // Dependency array ensures updates when navigation changes
+    
+    return <View>...</View>;
+};
+```
+
+**Use Cases**:
+- **Navigation Options**: Set header options before screen renders
+- **DOM Measurements**: Measure elements before paint
+- **Synchronous Updates**: Ensure updates happen before visual render
+- **Header Customization**: Customize headers without visual flicker
+- **State-Dependent Headers**: Update headers based on component state
+
+#### Advanced Features Comparison
+
+| Feature | Purpose | When to Use | Performance Impact |
+|---------|---------|-------------|-------------------|
+| `useNavigationState` | Access navigation state | Dynamic UI based on navigation | Low (optimized selector) |
+| `headerRight` | Custom right header | Action buttons, state controls | Medium (re-renders on state change) |
+| `headerLeft` | Custom left header | Custom back buttons, platform-specific UI | Medium (re-renders on navigation) |
+| `useLayoutEffect` | Synchronous DOM updates | Header customization, measurements | High (blocks paint) |
+
+#### Advanced Features Best Practices
+
+1. **useNavigationState**:
+   - Use selector functions to minimize re-renders
+   - Only subscribe to the state you actually need
+   - Handle edge cases (first screen, no previous route)
+
+2. **Header Customization**:
+   - Use `useLayoutEffect` to prevent visual flicker
+   - Include proper dependency arrays
+   - Consider platform differences (iOS vs Android)
+   - Keep header components lightweight
+
+3. **Performance Optimization**:
+   - Memoize header components if they're expensive to render
+   - Use `useCallback` for header button handlers
+   - Avoid complex calculations in header components
+
 #### Best Practices
 
 1. **Parameter Naming**: Use consistent parameter names across screens
@@ -319,6 +483,9 @@ const MyScreen = ({ navigation, route }) => {
 3. **Back Button**: Consider using `goBack()` for explicit back navigation
 4. **Replace vs Navigate**: Use `replace()` when you don't want users to go back
 5. **Parameter Validation**: Always check if parameters exist before using them
+6. **Header Performance**: Use `useLayoutEffect` for header updates to prevent flicker
+7. **Navigation State**: Use `useNavigationState` for dynamic navigation-dependent UI
+8. **Platform Considerations**: Implement platform-specific header behavior when needed
 
 ### React Hooks Demo
 
@@ -476,6 +643,9 @@ const NavigationDemo = () => {
 - React Hooks: `https://react.dev/reference/react`
 - React Navigation: `https://reactnavigation.org/`
 - Stack Navigator: `https://reactnavigation.org/docs/stack-navigator/`
+- Navigation State: `https://reactnavigation.org/docs/navigation-state/`
+- Header Customization: `https://reactnavigation.org/docs/headers/`
+- useLayoutEffect: `https://react.dev/reference/react/useLayoutEffect`
 
 ---
 If you run into issues, please include your OS, Node version, device/emulator, and error logs when reporting.
