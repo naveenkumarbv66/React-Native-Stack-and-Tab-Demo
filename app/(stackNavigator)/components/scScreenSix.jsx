@@ -1,7 +1,6 @@
-import { StyleSheet, Text, View, Button, TouchableOpacity, Platform } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'; // Assuming you are using Expo
-import { useNavigationState } from '@react-navigation/native';
+import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native'
 import React from 'react'
+import useGenericBackButton from '../hooks/useGenericBackButton'
 
 const scScreenSix = ({ navigation }) => {
     // Use React.useState to create a state for the count.
@@ -13,27 +12,20 @@ const scScreenSix = ({ navigation }) => {
     const resetCount = () => setCount(0);
     const callScreenThree = () => {
         navigation.navigate('Screen Three', {
-            itemName: 'from Screen Five',
-            itemId: 22,
+            itemName: 'from Screen Six',
+            itemId: 66,
         })
     }
 
-    // Use useNavigationState hook to get the navigation state.
-    // We use a selector function to pick out the previous route name.
-    const previousRouteName = useNavigationState(state => {
-        // Get the current route index
-        const currentIndex = state.index;
-        const routes = state.routes;
+    const callScreenSeven = () => {
+        navigation.navigate('Screen Seven', {
+            itemName: 'from Screen Six',
+            itemId: 666,
+        })
+    }
 
-        // If we're not on the first screen, get the previous route
-        if (currentIndex > 0) {
-            const previousRoute = routes[currentIndex - 1];
-            return previousRoute ? previousRoute.name : 'Back';
-        }
-
-        // If we're on the first screen, return 'Back' as fallback
-        return 'Back';
-    });
+    // Use the generic back button hook
+    useGenericBackButton(navigation);
 
     // Use React.useLayoutEffect to set the header options after the component has rendered.
     // This hook ensures the header is updated with the current state.
@@ -53,35 +45,25 @@ const scScreenSix = ({ navigation }) => {
                     <TouchableOpacity onPress={callScreenThree} style={styles.headerButton}>
                         <Text style={styles.headerButtonText}>SC3</Text>
                     </TouchableOpacity>
+                    <TouchableOpacity onPress={callScreenSeven} style={styles.headerButton}>
+                        <Text style={styles.headerButtonText}>SC7</Text>
+                    </TouchableOpacity>
                 </View>
             ),
         });
-    }, [navigation, previousRouteName]); // The dependency array ensures this runs when the navigation object changes.
+    }, [navigation, count]); // The dependency array ensures this runs when the navigation object or count changes.
 
-    React.useLayoutEffect(() => {
-        navigation.setOptions({
-            // Set the headerLeft option only on Android.
-            headerLeft: () =>
-                Platform.OS === 'android' ? (
-                    <TouchableOpacity
-                        onPress={() => navigation.goBack()}
-                        style={styles.backButtonContainer}>
-                        <Ionicons name="arrow-back" size={24} color="white" style={{ marginLeft: 24 }} />
-                        <Text style={styles.backButtonText}>{previousRouteName}</Text>
-                    </TouchableOpacity>
-                ) : undefined, // Keep default iOS behavior
-        });
-    }, [navigation, previousRouteName]);
+    // Note: headerLeft is now handled by useGenericBackButton hook
 
     return (
         <View style={styles.container}>
-            <Text>scScreen Five</Text>
+            <Text>scScreen Six</Text>
             <Text style={styles.countText}>Count: {count}</Text>
         </View>
     )
 }
 
-export default scScreenFive
+export default scScreenSix
 
 const styles = StyleSheet.create({
 
@@ -106,7 +88,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         // Use 'space-between' to distribute space evenly, pushing the buttons apart.
         justifyContent: 'space-between',
-        width: 150, // Set a fixed width for the button container.
+        width: 200, // Increased width to accommodate the new button
     },
     headerButton: {
         // Style the button's touchable area.
@@ -121,17 +103,5 @@ const styles = StyleSheet.create({
     countText: {
         fontSize: 24,
         fontWeight: 'bold',
-    },
-
-    backButtonContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginLeft: -10, // Adjust this value to align the button correctly.
-        paddingRight: 10,
-    },
-    backButtonText: {
-        marginHorizontal: 5,
-        fontSize: 16,
-        color: 'white',
     },
 })

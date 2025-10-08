@@ -6,7 +6,8 @@ import index from './index';
 import snScreenTwo from './snScreenTwo';
 import snScreenThree from './snScreenThree';
 import scScreenFour from './scScreenFour';
-import scScreenFive from './scScreenFive'
+import scScreenFive from './scScreenFive';
+import scScreenSeven from './scScreenSeven';
 
 const Stack = createStackNavigator();
 
@@ -29,6 +30,7 @@ export default function CustomNavigationStackLayout() {
             <Stack.Screen name="Screen Three" component={snScreenThree} />
             <Stack.Screen name="Screen Four" component={scScreenFour} />
             <Stack.Screen name="Screen Five" component={scScreenFive} />
+            <Stack.Screen name="Screen Seven" component={scScreenSeven} />
         </Stack.Navigator>
     );
 }

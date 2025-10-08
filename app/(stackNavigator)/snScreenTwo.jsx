@@ -4,10 +4,10 @@ import useGenericBackButton from './hooks/useGenericBackButton'
 
 const snScreenTwo = ({ navigation, route }) => {
     const { itemName, itemId } = route.params;
-    
+
     // Use the generic back button hook
     useGenericBackButton(navigation);
-    
+
     return (
         <View style={styles.container}>
             <Text>snScreenTwo</Text>
@@ -21,6 +21,17 @@ const snScreenTwo = ({ navigation, route }) => {
                     navigation.navigate('Screen Three', {
                         itemName: 'from Screen Two',
                         itemId: 2,
+                    });
+                }}
+            />
+            <View style={{ margin: 10 }}></View>
+            <Button
+                title="Go to Screen Seven"
+                onPress={() => {
+                    // Pass the data as the second argument
+                    navigation.navigate('Screen Seven', {
+                        itemName: 'from Screen Two',
+                        itemId: 1221,
                     });
                 }}
             />

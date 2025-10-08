@@ -17,6 +17,13 @@ const scScreenFive = ({ navigation }) => {
         })
     }
 
+    const callScreenSeven = () => {
+        navigation.navigate('Screen Seven', {
+            itemName: 'from Screen Five',
+            itemId: 55,
+        })
+    }
+
     // Use the generic back button hook
     useGenericBackButton(navigation);
 
@@ -37,6 +44,9 @@ const scScreenFive = ({ navigation }) => {
                     </TouchableOpacity>
                     <TouchableOpacity onPress={callScreenThree} style={styles.headerButton}>
                         <Text style={styles.headerButtonText}>SC3</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={callScreenSeven} style={styles.headerButton}>
+                        <Text style={styles.headerButtonText}>SC7</Text>
                     </TouchableOpacity>
                 </View>
             ),
@@ -78,7 +88,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         // Use 'space-between' to distribute space evenly, pushing the buttons apart.
         justifyContent: 'space-between',
-        width: 150, // Set a fixed width for the button container.
+        width: 200, // Increased width to accommodate the new button
     },
     headerButton: {
         // Style the button's touchable area.

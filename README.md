@@ -40,6 +40,13 @@ Scripts are defined in `package.json`:
 ### Project Structure
 ```
 app/
+  (customStack)/
+    _layout.jsx
+    cStackFour.jsx
+    cStackOne.jsx
+    cStackThree.jsx
+    cStackTwo.jsx
+    index.jsx
   (dynamicRoutes)/
     _layout.tsx
     [name].tsx
@@ -55,6 +62,20 @@ app/
     screenOne.jsx
     screenThree.jsx
     screenTwo.jsx
+  (stackNavigator)/
+    _layout.jsx
+    index.jsx
+    snScreenTwo.jsx
+    snScreenThree.jsx
+    scScreenFour.jsx
+    scScreenFive.jsx
+    scScreenSeven.jsx
+    components/
+      GenericBackButton.jsx
+      README.md
+      scScreenSix.jsx
+    hooks/
+      useGenericBackButton.jsx
   (tab)/
     _layout.jsx
     index.jsx
@@ -70,11 +91,42 @@ Key points:
 - `app/index.jsx`: Root route.
 - `app/(tab)/_layout.jsx`: Declares a tab navigator and tab screens.
 - `app/(stack)/_layout.tsx`: Declares a stack navigator and its screens.
+- `app/(stackNavigator)/_layout.jsx`: Advanced stack navigator with comprehensive navigation features.
+- `app/(stackNavigator)/scScreenSeven.jsx`: Navigation events demo with real-time logging.
+- `app/(stackNavigator)/components/GenericBackButton.jsx`: Reusable back button component.
+- `app/(stackNavigator)/hooks/useGenericBackButton.jsx`: Custom hook for easy back button integration.
 - `app/(dynamicRoutes)/_layout.tsx`: Declares a stack navigator for dynamic routes.
 - `app/(dynamicRoutes)/[name].tsx`: Dynamic route that accepts a `name` parameter.
 - `app/(dynamicRoutes)/index.tsx`: Entry point for dynamic routes with navigation examples.
 - `app/(link)/*`: Simple linkable screens (e.g., login/register/forgot password flows).
 - `app/+not-found.tsx`: 404 route for unmatched paths.
+
+### Stack Navigator Group (Advanced Features)
+
+The `(stackNavigator)` group demonstrates advanced React Navigation features with comprehensive examples:
+
+#### Features Demonstrated
+- **Complete Navigation Methods**: All 7 navigation methods (navigate, replace, push, pop, popTo, popToTop, goBack)
+- **Navigation Events**: Real-time event logging with focus, blur, beforeRemove, and state events
+- **Generic Back Button System**: Reusable back button with previous screen name
+- **Header Customization**: Dynamic header buttons and platform-specific behavior
+- **Parameter Passing**: Comprehensive parameter passing between screens
+- **Interactive Testing**: Buttons to test all navigation scenarios
+
+#### Screens Overview
+- **Home**: Entry point with navigation to Screen Two
+- **Screen Two**: Receives parameters and navigates to Screen Three
+- **Screen Three**: Demonstrates navigate, replace, push, and pop methods
+- **Screen Four**: Shows popTo, popToTop, and goBack methods
+- **Screen Five**: Header customization with count buttons and navigation to Screen Seven
+- **Screen Six**: Similar to Screen Five with additional navigation options
+- **Screen Seven**: Comprehensive navigation events demo with real-time logging
+
+#### How to Access
+1. Navigate to any screen in the stack navigator
+2. Use the header buttons (SC3, SC7) to access different screens
+3. Try different navigation methods to see parameter passing
+4. Visit Screen Seven for the complete navigation events demo
 
 ### Dynamic Routes
 The app includes dynamic routing capabilities that allow passing parameters through URLs:
@@ -458,6 +510,121 @@ const MyScreen = ({ navigation }) => {
 | `headerLeft` | Custom left header | Custom back buttons, platform-specific UI | Medium (re-renders on navigation) |
 | `useLayoutEffect` | Synchronous DOM updates | Header customization, measurements | High (blocks paint) |
 
+#### Navigation Events Demo (Screen Seven)
+
+This project includes a comprehensive navigation events demonstration in **Screen Seven** that showcases React Navigation's event system.
+
+**Definition**: Navigation events allow you to listen to various navigation state changes and user interactions in your React Navigation app.
+
+**Features Demonstrated**:
+- **Real-time Event Logging**: Visual log showing all navigation events with timestamps
+- **Focus/Blur Events**: Track when screens come into and go out of focus
+- **beforeRemove Event**: Prevent navigation with confirmation dialogs
+- **State Events**: Monitor navigation state changes
+- **Interactive Testing**: Buttons to trigger different navigation actions
+
+**Example Implementation**:
+```javascript
+import { useEffect, useState, useRef } from 'react';
+import { ScrollView, Alert } from 'react-native';
+
+const NavigationEventsDemo = ({ navigation }) => {
+    const [eventLog, setEventLog] = useState([]);
+    const scrollViewRef = useRef(null);
+
+    useEffect(() => {
+        // Focus event - when screen comes into focus
+        const unsubscribeFocus = navigation.addListener('focus', () => {
+            addToLog('FOCUS', 'Screen is now focused');
+        });
+
+        // Blur event - when screen goes out of focus
+        const unsubscribeBlur = navigation.addListener('blur', () => {
+            addToLog('BLUR', 'Screen is now blurred');
+        });
+
+        // beforeRemove event - before screen is removed from stack
+        const unsubscribeBeforeRemove = navigation.addListener('beforeRemove', (e) => {
+            e.preventDefault();
+            Alert.alert(
+                'Discard changes?',
+                'You have unsaved changes. Are you sure you want to go back?',
+                [
+                    { text: "Don't leave", style: 'cancel' },
+                    { text: 'Discard', onPress: () => navigation.dispatch(e.data.action) },
+                ]
+            );
+        });
+
+        // State event - when navigation state changes
+        const unsubscribeState = navigation.addListener('state', (e) => {
+            addToLog('STATE_CHANGE', 'Navigation state updated');
+        });
+
+        return () => {
+            unsubscribeFocus();
+            unsubscribeBlur();
+            unsubscribeBeforeRemove();
+            unsubscribeState();
+        };
+    }, [navigation]);
+
+    return (
+        <ScrollView ref={scrollViewRef}>
+            {eventLog.map((log, index) => (
+                <Text key={index}>{log}</Text>
+            ))}
+        </ScrollView>
+    );
+};
+```
+
+**Navigation Events Available**:
+- **`focus`**: Screen comes into focus
+- **`blur`**: Screen goes out of focus
+- **`beforeRemove`**: Before screen is removed (can prevent navigation)
+- **`state`**: Navigation state changes
+- **`beforeRemove`**: Custom confirmation dialogs
+
+**Use Cases**:
+- **Analytics**: Track user navigation patterns
+- **Data Fetching**: Load data when screen comes into focus
+- **Cleanup**: Clear timers or subscriptions when screen loses focus
+- **Prevention**: Prevent navigation with unsaved changes
+- **State Management**: Update UI based on navigation state
+
+#### Generic Back Button System
+
+This project implements a reusable generic back button system for consistent navigation across all screens.
+
+**Components**:
+- **`GenericBackButton`**: Reusable back button component
+- **`useGenericBackButton`**: Custom hook for easy integration
+
+**Features**:
+- **Dynamic Previous Name**: Automatically shows previous screen name
+- **Platform-Specific**: Only shows on Android (iOS uses default)
+- **Customizable**: Supports custom styling and colors
+- **Consistent UI**: Same back button behavior across all screens
+
+**Usage**:
+```javascript
+import useGenericBackButton from './hooks/useGenericBackButton';
+
+const MyScreen = ({ navigation }) => {
+    // Just one line to add generic back button
+    useGenericBackButton(navigation);
+    
+    return <View>...</View>;
+};
+```
+
+**Benefits**:
+- **DRY Principle**: No code duplication
+- **Maintainable**: Changes in one place affect all screens
+- **Consistent UX**: Professional appearance across the app
+- **Easy Integration**: One line of code per screen
+
 #### Advanced Features Best Practices
 
 1. **useNavigationState**:
@@ -471,10 +638,17 @@ const MyScreen = ({ navigation }) => {
    - Consider platform differences (iOS vs Android)
    - Keep header components lightweight
 
-3. **Performance Optimization**:
+3. **Navigation Events**:
+   - Always clean up event listeners in useEffect return
+   - Use meaningful event names for debugging
+   - Handle edge cases in beforeRemove events
+   - Consider performance impact of frequent state changes
+
+4. **Performance Optimization**:
    - Memoize header components if they're expensive to render
    - Use `useCallback` for header button handlers
    - Avoid complex calculations in header components
+   - Limit event log size to prevent memory issues
 
 #### Best Practices
 
@@ -637,15 +811,30 @@ const NavigationDemo = () => {
    - Pass parameters between screens
 
 ### Useful Links
+
+#### Core Documentation
 - Expo: `https://docs.expo.dev/`
 - Expo Router: `https://expo.dev/router`
 - React Native: `https://reactnative.dev/`
 - React Hooks: `https://react.dev/reference/react`
+
+#### React Navigation
 - React Navigation: `https://reactnavigation.org/`
 - Stack Navigator: `https://reactnavigation.org/docs/stack-navigator/`
 - Navigation State: `https://reactnavigation.org/docs/navigation-state/`
 - Header Customization: `https://reactnavigation.org/docs/headers/`
+- Navigation Events: `https://reactnavigation.org/docs/navigation-events/`
+- Navigation Actions: `https://reactnavigation.org/docs/navigation-actions/`
+
+#### React Hooks
 - useLayoutEffect: `https://react.dev/reference/react/useLayoutEffect`
+- useEffect: `https://react.dev/reference/react/useEffect`
+- useState: `https://react.dev/reference/react/useState`
+- useRef: `https://react.dev/reference/react/useRef`
+
+#### Project-Specific
+- Generic Back Button: `app/(stackNavigator)/components/README.md`
+- Navigation Events Demo: `app/(stackNavigator)/scScreenSeven.jsx`
 
 ---
 If you run into issues, please include your OS, Node version, device/emulator, and error logs when reporting.
